@@ -8,16 +8,20 @@ import {
   Param,
   Body,
   HttpCode,
+  ParseUUIDPipe,
+  ParseEnumPipe,
 } from '@nestjs/common';
-
 import { AppService } from './app.service';
+import { CriarRelatorioDTO, AtualizarRelatorioDTO } from './dtos/relatorio.dto';
 
 @Controller('relatorio/:tipo')
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get('')
-  selecionarTodosRelatorios(@Param('tipo') tipo: string): IRelatorio[] {
+  selecionarTodosRelatorios(
+    @Param('tipo', new ParseEnumPipe(TipoRelatorio)) tipo: string,
+  ): IRelatorio[] {
     const tipoRelatorio =
       tipo === 'ganho' ? TipoRelatorio.GANHO : TipoRelatorio.GASTO;
 
@@ -25,7 +29,11 @@ export class AppController {
   }
 
   @Get(':id')
-  selecionarRelatorio(@Param('tipo') tipo: string, @Param('id') id: string) {
+  selecionarRelatorio(
+    @Param('tipo', new ParseEnumPipe(TipoRelatorio)) tipo: string,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    console.log(id, typeof id);
     const tipoRelatorio =
       tipo === 'ganho' ? TipoRelatorio.GANHO : TipoRelatorio.GASTO;
 
@@ -34,9 +42,8 @@ export class AppController {
 
   @Post('')
   criarRelatorio(
-    @Body()
-    { quantidade, origem } /*body*/ : { origem: string; quantidade: number },
-    @Param('tipo') tipo: TipoRelatorio,
+    @Body() { quantidade, origem }: CriarRelatorioDTO,
+    @Param('tipo', new ParseEnumPipe(TipoRelatorio)) tipo: TipoRelatorio,
   ) {
     const tipoRelatorio =
       tipo === 'ganho' ? TipoRelatorio.GANHO : TipoRelatorio.GASTO;
@@ -49,11 +56,12 @@ export class AppController {
 
   @Put(':id')
   atualizarRelatorio(
-    @Param('tipo') tipo: string,
-    @Param('id') id: string,
+    @Param('tipo', new ParseEnumPipe(TipoRelatorio)) tipo: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body()
-    body /*body*/ : { origem: string; quantidade: number },
+    body /*body*/ : AtualizarRelatorioDTO,
   ) {
+    console.log(body);
     const tipoRelatorio =
       tipo === 'ganho' ? TipoRelatorio.GANHO : TipoRelatorio.GASTO;
 
@@ -62,7 +70,7 @@ export class AppController {
 
   @HttpCode(204)
   @Delete(':id')
-  apagarRelatorio(@Param('id') id: string) {
+  apagarRelatorio(@Param('id', ParseUUIDPipe) id: string) {
     return this.appService.apagarRelatorio(id);
   }
 }

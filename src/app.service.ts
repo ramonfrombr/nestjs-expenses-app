@@ -2,9 +2,14 @@ import { TipoRelatorio, dados, IRelatorio } from './dados';
 import { Injectable } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
 
-interface DadosRelatorio {
+interface IDadosRelatorio {
   quantidade: number;
   origem: string;
+}
+
+interface IAtualizarRelatorio {
+  quantidade?: number;
+  origem?: string;
 }
 
 @Injectable()
@@ -19,7 +24,7 @@ export class AppService {
       .find((relatorio) => relatorio.id === id);
   }
 
-  criarRelatorio(tipo: TipoRelatorio, { quantidade, origem }: DadosRelatorio) {
+  criarRelatorio(tipo: TipoRelatorio, { quantidade, origem }: IDadosRelatorio) {
     const novoRelatorio: IRelatorio = {
       id: uuid(),
       origem,
@@ -33,7 +38,11 @@ export class AppService {
     return novoRelatorio;
   }
 
-  atualizarRelatorio(tipo: TipoRelatorio, id: string, body: DadosRelatorio) {
+  atualizarRelatorio(
+    tipo: TipoRelatorio,
+    id: string,
+    body: IAtualizarRelatorio,
+  ) {
     const relatorioParaAtualizar = dados.relatorios
       .filter((relatorio) => relatorio.tipo === tipo)
       .find((relatorio) => relatorio.id === id);
