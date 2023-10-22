@@ -1,10 +1,16 @@
-import { Controller, Get, Put, Delete, Post } from '@nestjs/common';
+import { TipoRelatorio, dados, IRelatorio } from './dados';
+import { Controller, Get, Put, Delete, Post, Param } from '@nestjs/common';
 
 @Controller('relatorio/:tipo')
 export class AppController {
   @Get('')
-  selecionarTodosRelatorios() {
-    return [];
+  selecionarTodosRelatorios(@Param('tipo') tipo: string): IRelatorio[] {
+    const tipoRelatorio =
+      tipo === 'ganho' ? TipoRelatorio.GANHO : TipoRelatorio.GASTO;
+
+    return dados.relatorios.filter(
+      (relatorio) => relatorio.tipo === tipoRelatorio,
+    );
   }
 
   @Get(':id')

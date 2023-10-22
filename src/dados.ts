@@ -1,12 +1,42 @@
+export enum TipoRelatorio {
+  GANHO = 'ganho',
+  GASTO = 'gasto',
+}
+
 export const dados: Dados = {
-  relatorios: [],
+  relatorios: [
+    {
+      id: 'uuid',
+      origem: 'Salário',
+      quantidade: 7500,
+      data_criado: new Date(),
+      data_atualizado: new Date(),
+      tipo: TipoRelatorio.GANHO, //'gasto',
+    },
+    {
+      id: 'uuid2',
+      origem: 'Supermercado',
+      quantidade: 1000,
+      data_criado: new Date(),
+      data_atualizado: new Date(),
+      tipo: TipoRelatorio.GASTO, //'gasto',
+    },
+    {
+      id: 'uuid3',
+      origem: 'Shopping',
+      quantidade: 500,
+      data_criado: new Date(),
+      data_atualizado: new Date(),
+      tipo: TipoRelatorio.GASTO, //'gasto',
+    },
+  ],
 };
 
 interface Dados {
   relatorios: IRelatorio[];
 }
 
-interface IRelatorio {
+export interface IRelatorio {
   id: string;
   origem: string;
   quantidade: number;
@@ -14,17 +44,3 @@ interface IRelatorio {
   data_atualizado: Date;
   tipo: TipoRelatorio; // 'gasto' | 'ganho';
 }
-
-enum TipoRelatorio {
-  GANHO = 'ganho',
-  GASTO = 'gasto',
-}
-
-dados.relatorios.push({
-  id: 'uuid',
-  origem: 'Salário',
-  quantidade: 7500,
-  data_criado: new Date(),
-  data_atualizado: new Date(),
-  tipo: TipoRelatorio.GANHO, //'gasto',
-});
