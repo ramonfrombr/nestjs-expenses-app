@@ -14,8 +14,13 @@ export class AppController {
   }
 
   @Get(':id')
-  selecionarRelatorio() {
-    return {};
+  selecionarRelatorio(@Param('tipo') tipo: string, @Param('id') id: string) {
+    const tipoRelatorio =
+      tipo === 'ganho' ? TipoRelatorio.GANHO : TipoRelatorio.GASTO;
+
+    return dados.relatorios
+      .filter((relatorio) => relatorio.tipo === tipoRelatorio)
+      .find((relatorio) => relatorio.id === id);
   }
 
   @Post('')
