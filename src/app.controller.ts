@@ -7,6 +7,7 @@ import {
   Post,
   Param,
   Body,
+  HttpCode,
 } from '@nestjs/common';
 
 import { v4 as uuid } from 'uuid';
@@ -53,13 +54,45 @@ export class AppController {
   }
 
   @Put(':id')
-  atualizarRelatorio() {
-    return 'Atualizado';
+  atualizarRelatorio(
+    @Param('tipo') tipo: string,
+    @Param('id') id: string,
+    @Body()
+    body /*body*/ : { origem: string; quantidade: number },
+  ) {
+    const tipoRelatorio =
+      tipo === 'ganho' ? TipoRelatorio.GANHO : TipoRelatorio.GASTO;
+
+    const relatorioParaAtualizar = dados.relatorios
+      .filter((relatorio) => relatorio.tipo === tipoRelatorio)
+      .find((relatorio) => relatorio.id === id);
+
+    if (!relatorioParaAtualizar) return;
+
+    const indiceRelatorio = dados.relatorios.findIndex(
+      (relatorio) => relatorio.id === relatorioParaAtualizar.id,
+    );
+
+    dados.relatorios[indiceRelatorio] = {
+      ...dados.relatorios[indiceRelatorio],
+      ...body,
+    };
+
+    return dados.relatorios[indiceRelatorio];
   }
 
+  @HttpCode(204)
   @Delete(':id')
-  apagarRelatorio() {
-    return 'Apagado';
+  apagarRelatorio(@Param('id') id: string) {
+    const indiceRelatorio = dados.relatorios.findIndex(
+      (relatorio) => relatorio.id === id,
+    );
+
+    if (indiceRelatorio === -1) return;
+
+    dados.relatorios.splice(indiceRelatorio, 1);
+
+    return;
   }
 }
 
