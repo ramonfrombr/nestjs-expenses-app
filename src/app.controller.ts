@@ -1,4 +1,4 @@
-import { TipoRelatorio, IRelatorio } from './dados';
+import { TipoRelatorio } from './dados';
 import {
   Controller,
   Get,
@@ -12,16 +12,20 @@ import {
   ParseEnumPipe,
 } from '@nestjs/common';
 import { AppService } from './app.service';
-import { CriarRelatorioDTO, AtualizarRelatorioDTO } from './dtos/relatorio.dto';
+import {
+  CriarRelatorioDTO,
+  AtualizarRelatorioDTO,
+  RelatorioResponseDTO,
+} from './dtos/relatorio.dto';
 
 @Controller('relatorio/:tipo')
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get('')
+  @Get()
   selecionarTodosRelatorios(
     @Param('tipo', new ParseEnumPipe(TipoRelatorio)) tipo: string,
-  ): IRelatorio[] {
+  ): RelatorioResponseDTO[] {
     const tipoRelatorio =
       tipo === 'ganho' ? TipoRelatorio.GANHO : TipoRelatorio.GASTO;
 
@@ -32,8 +36,7 @@ export class AppController {
   selecionarRelatorio(
     @Param('tipo', new ParseEnumPipe(TipoRelatorio)) tipo: string,
     @Param('id', ParseUUIDPipe) id: string,
-  ) {
-    console.log(id, typeof id);
+  ): RelatorioResponseDTO {
     const tipoRelatorio =
       tipo === 'ganho' ? TipoRelatorio.GANHO : TipoRelatorio.GASTO;
 
@@ -44,7 +47,7 @@ export class AppController {
   criarRelatorio(
     @Body() { quantidade, origem }: CriarRelatorioDTO,
     @Param('tipo', new ParseEnumPipe(TipoRelatorio)) tipo: TipoRelatorio,
-  ) {
+  ): RelatorioResponseDTO {
     const tipoRelatorio =
       tipo === 'ganho' ? TipoRelatorio.GANHO : TipoRelatorio.GASTO;
 
@@ -60,7 +63,7 @@ export class AppController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body()
     body /*body*/ : AtualizarRelatorioDTO,
-  ) {
+  ): RelatorioResponseDTO {
     console.log(body);
     const tipoRelatorio =
       tipo === 'ganho' ? TipoRelatorio.GANHO : TipoRelatorio.GASTO;

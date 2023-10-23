@@ -5,6 +5,8 @@ import {
   IsNotEmpty,
   IsOptional,
 } from 'class-validator';
+import { Exclude, Expose } from 'class-transformer';
+import { TipoRelatorio } from 'src/dados';
 
 export class CriarRelatorioDTO {
   @IsNumber()
@@ -26,4 +28,28 @@ export class AtualizarRelatorioDTO {
   @IsString()
   @IsNotEmpty()
   origem: string;
+}
+
+export class RelatorioResponseDTO {
+  id: string;
+  origem: string;
+  quantidade: number;
+
+  @Expose({
+    name: 'dataCriado',
+  })
+  transformarDataCriado() {
+    return this.data_criado;
+  }
+
+  @Exclude()
+  data_criado: Date;
+
+  @Exclude()
+  data_atualizado: Date;
+  tipo: TipoRelatorio;
+
+  constructor(parcial: Partial<RelatorioResponseDTO>) {
+    Object.assign(this, parcial);
+  }
 }
